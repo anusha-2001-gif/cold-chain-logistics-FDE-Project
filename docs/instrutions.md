@@ -48,7 +48,7 @@ We need to query the database
    Trust server certificate: 🟩 Check this box / turn it ON (Crucial for Docker)
    Authentication type*: SQL Login
    User name*: sa
-   Password*: FdeEnterprisePass123!
+   Password*: YOUR_SQL_SERVER_PASSWORD
    Save Password: 🟩 Check this box
    Database name: Type master (or leave it on "Select a database")
    Encrypt: ⚠️ Change this from Mandatory to Optional (or False)
