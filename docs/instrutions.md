@@ -5,35 +5,28 @@
 - Download the dataset from 'data\source\data.txt'
 - Create and EC2 instance > docker container > mcr.microsoft.com/mssql/server:2022-latest
 - Spin up the Legacy MSSQL Server
-```
+```bash
+
 docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YOUR_SQL_SERVER_PASSWORD" -p 1433:1433 --name legacy-mssql -d mcr.microsoft.com/mssql/server:2022-latest
 
-# or multi-line in windows 
+# Multi-line command for Windows CMD
 docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YOUR_SQL_SERVER_PASSWORD" ^
    -p 1433:1433 --name legacy-mssql ^
    -d mcr.microsoft.com/mssql/server:2022-latest
-
-# or multi-line unix
-docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YOUR_SQL_SERVER_PASSWORD" \
-   -p 1433:1433 --name legacy-mssql \
+```
+# Multi-line command for Windows PowerShell (with persistent storage)
+docker run -e "ACCEPT_EULA=Y" `
+   -e "MSSQL_SA_PASSWORD=YOUR_SQL_SERVER_PASSWORD" `
+   -p 1433:1433 `
+   --name legacy-mssql `
+   -v mssql_data:/var/opt/mssql `
    -d mcr.microsoft.com/mssql/server:2022-latest
 
-# or multi-line with volume inside EC2
-docker run -v mssql_data:/var/opt/mssql \
-  -e "ACCEPT_EULA=Y" \
-  -e "MSSQL_SA_PASSWORD=YOUR_SQL_SERVER_PASSWORD" \
-  -p 1433:1433 \
-  --name legacy-mssql \
-  -d mcr.microsoft.com/mssql/server:2022-latest
-
-```
 - install the req > pip install -r requirements.txt
 
 - python scripts\ingest_legacy_data.py
   
-
-## Connecting to the data 
-
+# Connecting to the data
 We need to query the database
 - Download : https://github.com/microsoft/azuredatastudio
    - https://learn.microsoft.com/en-us/previous-versions/azure-data-studio/download-azure-data-studio?tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall
@@ -70,7 +63,7 @@ We need to query the database
 ```
 docker run -v mssql_data:/var/opt/mssql \
   -e "ACCEPT_EULA=Y" \
-  -e "MSSQL_SA_PASSWORD=FdeEnterprisePass123!" \
+  -e "MSSQL_SA_PASSWORD=YOUR_SQL_SERVER_PASSWORD" \
   -p 1433:1433 \
   --name legacy-mssql \
   -d mcr.microsoft.com/mssql/server:2022-latest
@@ -98,11 +91,11 @@ docker run -v mssql_data:/var/opt/mssql \
 * Input type: Select Parameters (Do not click "Load from Connection String", "Browse Azure", or "Browse Fabric")
 * Server name*: localhost
 * Port: 1433
-* Trust server certificate: 🟩 Check this box / Turn it ON
+* Trust server certificate: enable
 * Authentication type*: SQL Login
 * User name*: USR_FDE_RO
-* Password*: AgentPassword2026!
-* Save Password: 🟩 Check this box / Turn it ON
+* Password*: YOUR_AGENT_PASSWORD
+* Save Password: enable
 * Database name: Type master (or click "Select a database" and select master)
 * Encrypt: Change this from Mandatory to Optional (or False)
 ```
@@ -147,9 +140,12 @@ CREATE TABLE FDE_VIEWS.AgentAuditLog (
     Content NVARCHAR(MAX) -- NVARCHAR to safely handle JSON strings and large LLM outputs
 );
 
--- Grant the agent user permission to write only to this specific table
-```
-GRANT INSERT ON FDE_VIEWS.AgentAuditLog TO USR_FDE_RO;
+Important: Do not grant INSERT permission to USR_FDE_RO.
+This account must remain read-only.
+
+If audit logging requires database writes, configure a separate
+audit-writer account with INSERT permission limited to
+FDE_VIEWS.AgentAuditLog.
 ```
 
 ## Phase 5
