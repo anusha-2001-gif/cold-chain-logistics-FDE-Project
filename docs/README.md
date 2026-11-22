@@ -2,9 +2,6 @@
 
 An intelligent cold-chain incident management assistant that combines real-time shipment telemetry with Retrieval-Augmented Generation (RAG) to detect temperature breaches, retrieve Standard Operating Procedures (SOPs), and recommend Tier 1 / Tier 2 escalations.
 
-![Dashboard Preview](assets/dashboard_preview.png)
-*(Tip: Replace this line with a screenshot or GIF of your Streamlit dashboard)*
-
 ---
 
 ## 🚀 Key Features
@@ -19,7 +16,7 @@ An intelligent cold-chain incident management assistant that combines real-time 
 
 ## 🏗️ System Architecture
 
-```text
+
 [ Streamlit UI ] 
        │
        ▼
@@ -27,6 +24,8 @@ An intelligent cold-chain incident management assistant that combines real-time 
        ├──► [ SQL Server Tool ] ──► Queries live shipment telemetry & risk scores
        │
        └──► [ RAG Retrieval Tool ] ──► Hugging Face Embeddings + Pinecone (SOPs)
+
+ ---      
 
 ## 🛠️ Tech Stack
 
@@ -36,6 +35,8 @@ An intelligent cold-chain incident management assistant that combines real-time 
 * Relational Database: Microsoft SQL Server
 * Frontend / Dashboard: Streamlit
 * Containerization: Docker
+
+---
 
 ## ⚙️ Detailed Setup
 For step-by-step SQL Server schema setup and Pinecone indexing guides, see [instructions.md](instructions.md).
