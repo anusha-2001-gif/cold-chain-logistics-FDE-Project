@@ -7,7 +7,12 @@
 - Spin up the Legacy MSSQL Server
 ```bash
 
-docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YOUR_SQL_SERVER_PASSWORD" -p 1433:1433 --name legacy-mssql -d mcr.microsoft.com/mssql/server:2022-latest
+docker run -e "ACCEPT_EULA=Y" `
+   -e "MSSQL_SA_PASSWORD=YOUR_SQL_SERVER_PASSWORD" `
+   -p 1433:1433 `
+   --name legacy-mssql `
+   -v mssql_data:/var/opt/mssql `
+   -d mcr.microsoft.com/mssql/server:2022-latest
 
 # Multi-line command for Windows CMD
 docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YOUR_SQL_SERVER_PASSWORD" ^
@@ -21,6 +26,8 @@ docker run -e "ACCEPT_EULA=Y" `
    --name legacy-mssql `
    -v mssql_data:/var/opt/mssql `
    -d mcr.microsoft.com/mssql/server:2022-latest
+   
+If the legacy-mssql container already exists, do not create another container. Start the existing container using docker start legacy-mssql.
 
 - install the req > pip install -r requirements.txt
 
@@ -28,9 +35,7 @@ docker run -e "ACCEPT_EULA=Y" `
   
 # Connecting to the data
 We need to query the database
-- Download : https://github.com/microsoft/azuredatastudio
-   - https://learn.microsoft.com/en-us/previous-versions/azure-data-studio/download-azure-data-studio?tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall
-- The recommendation is to use VS code extension : "SQL Server (mssql)" by microsoft
+- Use VS code extension : "SQL Server (mssql)" by microsoft
    - Click on icon that looks like server or refrigarator, not the one with cylinder 
    - Add connection
    - Fill the below :
